@@ -92,6 +92,8 @@ class DaytonaWorkspace(SandboxedWorkspaceBase):
         default_mcps: list[MCPClient] | None = None,
         skill_paths: list[str] | None = None,
         os_user: str | None = None,
+        auto_stop_interval: int | None = None,
+        ttl_minutes: int | None = None,
     ) -> None:
         """Construct a :class:`DaytonaWorkspace`.
 
@@ -154,6 +156,11 @@ class DaytonaWorkspace(SandboxedWorkspaceBase):
         self.extra_pip: list[str] = list(extra_pip or [])
         self.instructions = instructions
         self.os_user = os_user
+        # Lease configuration forwarded to the SDK at sandbox creation.
+        # ``None`` leaves the SDK default (auto_stop 15 min idle) in
+        # effect; see Daytona `set_autostop_interval` / `set_ttl`.
+        self.auto_stop_interval = auto_stop_interval
+        self.ttl_minutes = ttl_minutes
 
         # ── SDK-derived paths ───────────────────────────────────
         self._user_home: str
@@ -401,6 +408,10 @@ class DaytonaWorkspace(SandboxedWorkspaceBase):
             kwargs["env_vars"] = self.env
         if self.os_user is not None:
             kwargs["os_user"] = self.os_user
+        if self.auto_stop_interval is not None:
+            kwargs["auto_stop_interval"] = self.auto_stop_interval
+        if self.ttl_minutes is not None:
+            kwargs["ttl_minutes"] = self.ttl_minutes
         return CreateSandboxFromSnapshotParams(**kwargs)
 
     # ── internals: SDK paths / bootstrap ────────────────────────

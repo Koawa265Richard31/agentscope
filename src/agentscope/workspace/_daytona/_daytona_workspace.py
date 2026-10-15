@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """DaytonaWorkspace — sandboxed workspace backed by Daytona.
 
 Architecture
@@ -326,9 +325,7 @@ class DaytonaWorkspace(SandboxedWorkspaceBase):
             return None
 
         usable = [
-            sandbox
-            for sandbox in candidates
-            if self._is_candidate_usable(sandbox)
+            sandbox for sandbox in candidates if self._is_candidate_usable(sandbox)
         ]
         if not usable:
             return None
@@ -474,8 +471,7 @@ class DaytonaWorkspace(SandboxedWorkspaceBase):
             f"| env UV_INSTALL_DIR={shlex.quote(uv_install_dir)} "
             f"INSTALLER_NO_MODIFY_PATH=1 sh",
             # 3. Gateway venv + base requirements.
-            f"{shlex.quote(self._uv_bin)} venv "
-            f"{shlex.quote(self._gateway_venv)}",
+            f"{shlex.quote(self._uv_bin)} venv {shlex.quote(self._gateway_venv)}",
             f"{shlex.quote(self._uv_bin)} pip install --python "
             f"{shlex.quote(self._gateway_python)} {pip_args}",
             # 4. agentscope itself.
